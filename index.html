@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Don't Know - Memory Space</title>
+    <title>Thư Viện - Những tấm ảnh riêng tư</title>
+    
+    <!-- Nhúng Firebase SDK qua CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         /* CSS cơ bản và Glassmorphism */
         body {
@@ -345,21 +350,45 @@
             margin-top: 4px;
         }
 
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
         .delete-btn {
             background-color: #e11d48;
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 6px 12px;
             font-size: 0.75rem;
             font-weight: 500;
             border-radius: 20px;
             cursor: pointer;
-            margin-top: 12px;
             transition: background 0.2s;
         }
 
         .delete-btn:hover {
             background-color: #be123c;
+        }
+
+        .download-btn {
+            background-color: #0ea5e9;
+            color: white;
+            text-decoration: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #0284c7;
         }
 
         /* --- STYLING CHO CHẾ ĐỘ SÁNG (LIGHT MODE) --- */
@@ -476,12 +505,12 @@
     </div>
 
     <div class="header">
-        <h1>🌕 I DON'T KNOW 🌕</h1>
-        <p>Thích lưu gì thì lưu :))</p>
+        <h1>🌙 THƯ VIỆN 🌙</h1>
+        <p>Những tấm ảnh riêng tư</p>
     </div>
 
     <div class="card">
-        <h2>✨ Những kỷ niệm của chúng ta ✨</h2>
+        <h2>✨ Thêm kỷ niệm mới ✨</h2>
         
         <!-- Ô nhập tên kỷ niệm -->
         <input type="text" class="input-field" id="memoryName" placeholder="Tên kỷ niệm...">
@@ -493,13 +522,32 @@
         <input type="file" id="fileInput" accept="image/*">
 
         <!-- Nút quản lý ảnh -->
-        <button class="manage-btn" onclick="openGallery(true)">Quản lý ảnh</button>
+        <button class="manage-btn" onclick="loadGallery(true)">Quản lý ảnh</button>
     </div>
 
     <!-- Khung lưới hiển thị danh sách ảnh -->
     <div id="galleryContainer" class="gallery-grid" style="display: none;"></div>
 
     <script>
+        // --- CẤU HÌNH FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD290EyLeZaTjqV0Voe5qZuvO2U93Rx5l0",
+            authDomain: "idontknow-b0342.firebaseapp.com",
+            projectId: "idontknow-b0342",
+            storageBucket: "idontknow-b0342.firebasestorage.app",
+            messagingSenderId: "691001919172",
+            appId: "1:691001919172:web:b02ba2d1c23bef7b6f6b91"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Tạo hoặc lấy User ID riêng cho thiết bị này để phân quyền xóa ảnh
+        let myUserId = localStorage.getItem('myUniqueUserId');
+        if (!myUserId) {
+            myUserId = 'user_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('myUniqueUserId', myUserId);
+        }
+
         // --- XỬ LÝ CÀI ĐẶT (MENU, NỀN, CHẾ ĐỘ) ---
         function toggleSettingsMenu() {
             const modal = document.getElementById('settingsModal');
@@ -509,7 +557,6 @@
             overlay.style.display = isOpen ? 'none' : 'block';
         }
 
-        // Tải ảnh nền từ máy
         const bgFileInput = document.getElementById('bgFileInput');
         bgFileInput.addEventListener('change', function() {
             const file = bgFileInput.files[0];
@@ -566,7 +613,6 @@
             });
         }
 
-        // Chế độ hiển thị (Sáng / Tối / Hệ thống)
         function setTheme(mode) {
             localStorage.setItem('themeSetting', mode);
             applyTheme(mode);
@@ -599,7 +645,7 @@
             });
         }
 
-        // --- XỬ LÝ UPLOAD KỶ NIỆM LÊN CLOUDINARY & LOCALSTORAGE ---
+        // --- XỬ LÝ UPLOAD KỶ NIỆM LÊN CLOUDINARY & LƯU LÊN FIREBASE FIRESTORE ---
         const fileInput = document.getElementById('fileInput');
         const memoryName = document.getElementById('memoryName');
 
@@ -614,7 +660,7 @@
             formData.append('upload_preset', 'idontknow');
 
             try {
-                alert('Đang tải ảnh lên không gian của bạn, vui lòng đợi :))');
+                alert('Đang tải ảnh lên kho lưu trữ chung, vui lòng đợi :))');
                 
                 const response = await fetch('https://api.cloudinary.com/v1_1/egzgqmsa/image/upload', {
                     method: 'POST',
@@ -624,21 +670,20 @@
                 const data = await response.json();
                 const imageUrl = data.secure_url;
 
-                let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
-                memories.push({ 
-                    name: name, 
-                    url: imageUrl, 
-                    date: new Date().toLocaleDateString('vi-VN') 
+                // Lưu dữ liệu lên Firestore để đồng bộ mọi thiết bị
+                await db.collection('memories').add({
+                    name: name,
+                    url: imageUrl,
+                    date: new Date().toLocaleDateString('vi-VN'),
+                    uploaderId: myUserId,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                localStorage.setItem('myMemories', JSON.stringify(memories));
 
-                alert('Đã lưu kỷ niệm thành công!');
-                
+                alert('Đã lưu kỷ niệm vào kho chung thành công!');
                 memoryName.value = '';
                 fileInput.value = '';
 
-                // Tải lại và tự động trượt xuống kho lưu trữ khi vừa upload xong
-                openGallery(true);
+                loadGallery(true);
 
             } catch (error) {
                 console.error('Lỗi khi tải ảnh:', error);
@@ -646,39 +691,58 @@
             }
         });
 
-        function openGallery(shouldScroll = false) {
+        // Lấy dữ liệu trực tiếp từ Firestore (real-time)
+        function loadGallery(shouldScroll = false) {
             const gallery = document.getElementById('galleryContainer');
             gallery.style.display = 'grid';
-            gallery.innerHTML = '';
+            gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Đang đồng bộ kho lưu trữ...</p>';
 
-            let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
+            db.collection('memories').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                gallery.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Chưa có kỷ niệm nào trong kho chung...</p>';
+                    return;
+                }
 
-            if (memories.length === 0) {
-                gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Chưa có kỷ niệm nào được lưu lại...</p>';
-            } else {
-                memories.forEach((item, index) => {
+                snapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const docId = doc.id;
+                    
+                    // Chỉ hiển thị nút xóa nếu máy hiện tại là người đã tải ảnh này lên
+                    let deleteButtonHtml = '';
+                    if (item.uploaderId === myUserId) {
+                        deleteButtonHtml = `<button class="delete-btn" onclick="deleteMemory('${docId}')">Xóa ảnh</button>`;
+                    }
+
                     gallery.innerHTML += `
                         <div class="memory-item">
                             <img src="${item.url}" alt="${item.name}">
                             <p>${item.name}</p>
                             <span>${item.date || '02/11/2026'}</span>
-                            <button class="delete-btn" onclick="deleteMemory(${index})">Ẩn ảnh khỏi website</button>
+                            <div class="action-btns">
+                                <a href="${item.url}" target="_blank" download class="download-btn">Tải về</a>
+                                ${deleteButtonHtml}
+                            </div>
                         </div>
                     `;
                 });
-            }
 
-            // Chỉ trượt trang khi người dùng bấm nút "Quản lý ảnh" hoặc vừa upload ảnh mới
-            if (shouldScroll) {
-                gallery.scrollIntoView({ behavior: 'smooth' });
-            }
+                if (shouldScroll) {
+                    gallery.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         }
 
-        function deleteMemory(index) {
-            let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
-            memories.splice(index, 1);
-            localStorage.setItem('myMemories', JSON.stringify(memories));
-            openGallery(false);
+        async function deleteMemory(docId) {
+            if (confirm('Bạn có chắc chắn muốn xóa ảnh này khỏi kho chung?')) {
+                try {
+                    await db.collection('memories').doc(docId).delete();
+                } catch (error) {
+                    console.error('Lỗi khi xóa:', error);
+                    alert('Không thể xóa ảnh, vui lòng thử lại!');
+                }
+            }
         }
 
         // Khởi chạy ngay khi vừa vào trang web
@@ -692,8 +756,7 @@
             const savedTheme = localStorage.getItem('themeSetting') || 'dark';
             setTheme(savedTheme);
 
-            // Tự động hiển thị ảnh đã lưu ngay khi vừa mở web mà không cần bấm nút hay trượt trang
-            openGallery(false);
+            loadGallery(false);
         });
     </script>
 </body>
