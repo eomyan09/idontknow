@@ -493,10 +493,10 @@
         <input type="file" id="fileInput" accept="image/*">
 
         <!-- Nút quản lý ảnh -->
-        <button class="manage-btn" onclick="openGallery()">Quản lý ảnh</button>
+        <button class="manage-btn" onclick="openGallery(true)">Quản lý ảnh</button>
     </div>
 
-    <!-- Khung lưới hiển thị danh sách ảnh (mặc định ẩn đi) -->
+    <!-- Khung lưới hiển thị danh sách ảnh -->
     <div id="galleryContainer" class="gallery-grid" style="display: none;"></div>
 
     <script>
@@ -520,7 +520,7 @@
                 let bgList = JSON.parse(localStorage.getItem('myBackgrounds')) || [];
                 if (!bgList.includes(base64Url)) {
                     bgList.unshift(base64Url);
-                    if (bgList.length > 10) bgList.pop(); // Giữ tối đa 10 ảnh nền gần nhất
+                    if (bgList.length > 10) bgList.pop();
                     localStorage.setItem('myBackgrounds', JSON.stringify(bgList));
                 }
                 applyBackground(base64Url);
@@ -532,7 +532,6 @@
 
         function applyBackground(url) {
             if (url) {
-                // Tạo lớp phủ mờ nhẹ trên ảnh nền để giữ chữ dễ nhìn
                 document.body.style.backgroundImage = `linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.75)), url('${url}')`;
                 localStorage.setItem('selectedBg', url);
             } else {
@@ -638,7 +637,8 @@
                 memoryName.value = '';
                 fileInput.value = '';
 
-                openGallery();
+                // Tải lại và tự động trượt xuống kho lưu trữ khi vừa upload xong
+                openGallery(true);
 
             } catch (error) {
                 console.error('Lỗi khi tải ảnh:', error);
@@ -646,7 +646,7 @@
             }
         });
 
-        function openGallery() {
+        function openGallery(shouldScroll = false) {
             const gallery = document.getElementById('galleryContainer');
             gallery.style.display = 'grid';
             gallery.innerHTML = '';
@@ -668,17 +668,20 @@
                 });
             }
 
-            gallery.scrollIntoView({ behavior: 'smooth' });
+            // Chỉ trượt trang khi người dùng bấm nút "Quản lý ảnh" hoặc vừa upload ảnh mới
+            if (shouldScroll) {
+                gallery.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function deleteMemory(index) {
             let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
             memories.splice(index, 1);
             localStorage.setItem('myMemories', JSON.stringify(memories));
-            openGallery();
+            openGallery(false);
         }
 
-        // Khởi chạy khi tải trang
+        // Khởi chạy ngay khi vừa vào trang web
         window.addEventListener('DOMContentLoaded', () => {
             const savedBg = localStorage.getItem('selectedBg');
             if (savedBg) {
@@ -688,6 +691,9 @@
 
             const savedTheme = localStorage.getItem('themeSetting') || 'dark';
             setTheme(savedTheme);
+
+            // Tự động hiển thị ảnh đã lưu ngay khi vừa mở web mà không cần bấm nút hay trượt trang
+            openGallery(false);
         });
     </script>
 </body>
