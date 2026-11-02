@@ -232,7 +232,7 @@
                 const data = await response.json();
                 const imageUrl = data.secure_url; // Đường link bức ảnh sau khi lên mây
 
-                // Lưu thông tin (Tên + Link ảnh + Ngày tháng) vào bộ nhớ trình duyệt (LocalStorage)
+                // Lưu thông tin vào bộ nhớ trình duyệt (LocalStorage)
                 let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
                 memories.push({ 
                     name: name, 
@@ -247,11 +247,8 @@
                 memoryName.value = '';
                 fileInput.value = '';
 
-                // Nếu bộ sưu tập đang được mở, tự động cập nhật lại luôn
-                const gallery = document.getElementById('galleryContainer');
-                if (gallery.style.display === 'grid') {
-                    openGallery();
-                }
+                // TỰ ĐỘNG GỌI HÀM MỞ VÀ TRƯỢT XUỐNG BỘ SƯU TẬP NGAY SAU KHI UPLOAD XONG
+                openGallery();
 
             } catch (error) {
                 console.error('Lỗi khi tải ảnh:', error);
@@ -260,7 +257,7 @@
         });
 
         function openGallery() {
-            // Hiển thị khung chứa lưới ảnh lên (giữ nguyên khung nhập liệu phía trên)
+            // Hiển thị khung chứa lưới ảnh lên
             const gallery = document.getElementById('galleryContainer');
             gallery.style.display = 'grid';
             gallery.innerHTML = ''; // Làm sạch trước khi load
