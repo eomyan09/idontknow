@@ -55,7 +55,7 @@
             transform: scale(1.05);
         }
 
-        /* Nút Mở Trình Phát Nhạc (Top: 60px, dưới nút cài đặt) */
+        /* Nút Mở Trình Phát Nhạc (Hình âm nhạc màu xám, Top: 65px) */
         .music-toggle-btn {
             position: fixed;
             top: 65px;
@@ -65,7 +65,7 @@
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #94a3b8; /* Hình âm nhạc màu xám */
+            color: #94a3b8;
             font-size: 1.1rem;
             display: flex;
             align-items: center;
@@ -82,7 +82,7 @@
             transform: scale(1.05);
         }
 
-        /* Modal Cài đặt & Phát nhạc chung */
+        /* Modal Cài đặt & Phát nhạc */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -102,16 +102,18 @@
             border-radius: 20px;
             padding: 25px;
             width: 90%;
-            max-width: 440px;
+            max-width: 460px;
             z-index: 1002;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             box-sizing: border-box;
             display: none;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 10px;
         }
         .modal-header h3 { margin: 0; font-size: 1.2rem; }
@@ -119,32 +121,57 @@
         .close-modal-btn:hover { color: #fff; }
 
         /* Giao diện Trình phát nhạc */
-        .music-tabs {
-            display: flex; gap: 5px; margin-bottom: 15px;
-        }
-        .music-tab {
-            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: #94a3b8; padding: 8px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; text-align: center;
-            transition: all 0.2s;
-        }
-        .music-tab.active, .music-tab:hover { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border-color: transparent; }
-
         .music-player-box {
-            width: 100%; min-height: 150px; background: rgba(0,0,0,0.3); border-radius: 12px;
+            width: 100%; height: 160px; background: rgba(0,0,0,0.3); border-radius: 12px;
             display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 15px;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .music-player-box iframe { width: 100%; height: 152px; border: none; border-radius: 12px; }
+        .music-player-box iframe, .music-player-box audio, .music-player-box video {
+            width: 100%; height: 100%; border: none; border-radius: 12px; object-fit: cover;
+        }
 
-        .music-input-group { display: flex; gap: 8px; }
-        .music-input-group input {
-            flex: 1; padding: 10px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;
+        .music-search-box {
+            width: 100%; padding: 10px 12px; margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px; color: #ffffff; font-size: 0.9rem; box-sizing: border-box; outline: none;
         }
-        .music-input-group button {
-            background: #6366f1; color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600;
+        .music-search-box::placeholder { color: #94a3b8; }
+
+        .playlist-title { font-size: 0.85rem; color: #94a3b8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .playlist-container {
+            max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;
         }
-        .music-input-group button:hover { opacity: 0.9; }
+        .playlist-item {
+            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;
+        }
+        .playlist-item:hover { background: rgba(255, 255, 255, 0.1); color: #818cf8; }
+
+        /* Form thêm bài hát của bạn */
+        .add-song-form {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px; border-radius: 12px; margin-top: 10px;
+        }
+        .add-song-form h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: #cbd5e1; }
+        .add-song-input {
+            width: 100%; padding: 8px 10px; margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px; color: #fff; font-size: 0.85krem; box-sizing: border-box; outline: none;
+        }
+        .form-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 0.85rem; color: #94a3b8; }
+        .form-row select { background: #111827; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; outline: none; }
+        
+        .sub-upload-btn-music {
+            display: block; background: rgba(255, 255, 255, 0.06); border: 1px dashed rgba(255, 255, 255, 0.25);
+            padding: 6px; border-radius: 6px; text-align: center; cursor: pointer; font-size: 0.8rem; margin-bottom: 8px; color: #cbd5e1;
+        }
+        .sub-upload-btn-music:hover { background: rgba(255, 255, 255, 0.12); }
+
+        .add-btn {
+            background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border: none;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; width: 100%;
+        }
 
         /* Các phần Cài đặt khác */
         .settings-section { margin-bottom: 20px; }
@@ -201,13 +228,14 @@
         body.light-mode .card { background: rgba(255, 255, 255, 0.85); border-color: rgba(0, 0, 0, 0.1); }
         body.light-mode .card h2, body.light-mode .header h1 { color: #0f172a; }
         body.light-mode .header p { color: #475569; }
-        body.light-mode .input-field { background: rgba(0, 0, 0, 0.04); color: #0f172a; border-color: rgba(0, 0, 0, 0.12); }
+        body.light-mode .input-field, body.light-mode .music-search-box, body.light-mode .add-song-input { background: rgba(0, 0, 0, 0.04); color: #0f172a; border-color: rgba(0, 0, 0, 0.12); }
         body.light-mode .memory-item { background: #ffffff; border-color: rgba(0, 0, 0, 0.1); }
         body.light-mode .memory-item p { color: #0f172a; }
         body.light-mode .custom-modal { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: rgba(0,0,0,0.15); }
-        body.light-mode .custom-modal h3, body.light-mode .settings-section h4 { color: #475569; }
+        body.light-mode .custom-modal h3, body.light-mode .settings-section h4, body.light-mode .playlist-title, body.light-mode .add-song-form h4 { color: #475569; }
         body.light-mode .settings-toggle-btn, body.light-mode .music-toggle-btn { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.15); color: #475569; }
-        body.light-mode .music-tab { background: rgba(0,0,0,0.04); color: #475569; border-color: rgba(0,0,0,0.1); }
+        body.light-mode .playlist-item, body.light-mode .add-song-form { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); color: #0f172a; }
+        body.light-mode .sub-upload-btn-music { background: rgba(0, 0, 0, 0.04); border-color: rgba(0,0,0,0.2); color: #0f172a; }
     </style>
 </head>
 <body>
@@ -218,7 +246,7 @@
     <!-- Nút Mở Trình Phát Nhạc (Hình âm nhạc màu xám, Top: 65px) -->
     <button class="music-toggle-btn" onclick="toggleModal('musicModal')" title="Trình phát nhạc">🎵</button>
 
-    <!-- Overlay chung cho Modal -->
+    <!-- Overlay chung -->
     <div id="modalOverlay" class="modal-overlay" onclick="closeAllModals()"></div>
 
     <!-- Modal Cài đặt -->
@@ -245,27 +273,45 @@
         </div>
     </div>
 
-    <!-- Modal Trình Phát Nhạc (YouTube, Spotify, Apple Music) -->
+    <!-- Modal Trình Phát Nhạc & Tạo Danh Sách Phát -->
     <div id="musicModal" class="custom-modal">
         <div class="modal-header">
-            <h3>🎵 Trình phát nhạc</h3>
+            <h3>🎵 Trình phát nhạc & Playlist</h3>
             <button class="close-modal-btn" onclick="closeAllModals()">✕</button>
-        </div>
-        
-        <div class="music-tabs">
-            <button class="music-tab active" onclick="switchMusicPlatform('youtube')">YouTube</button>
-            <button class="music-tab" onclick="switchMusicPlatform('spotify')">Spotify</button>
-            <button class="music-tab" onclick="switchMusicPlatform('apple')">Apple Music</button>
         </div>
 
         <div class="music-player-box" id="musicPlayerContainer">
-            <!-- Khung phát nhạc mặc định YouTube (Lo-Fi Chill) -->
-            <iframe id="activePlayerFrame" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <!-- Mặc định phát bài Lo-Fi Chill -->
+            <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
-        <div class="music-input-group">
-            <input type="text" id="musicSearchInput" placeholder="Dán link bài hát / playlist...">
-            <button onclick="loadMusicLink()">Phát</button>
+        <input type="text" id="musicSearchBox" class="music-search-box" placeholder="🔍 Gõ tên bài hát để lọc..." oninput="renderPlaylist()">
+
+        <div class="playlist-title">
+            <span>Danh sách phát (Hệ thống & Của bạn):</span>
+        </div>
+        <div class="playlist-container" id="playlistContainer">
+            <!-- Render danh sách nhạc qua JS -->
+        </div>
+
+        <!-- Form tạo/thêm bài hát cá nhân -->
+        <div class="add-song-form">
+            <h4>➕ Thêm bài hát vào danh sách phát</h4>
+            <input type="text" id="newSongTitle" class="add-song-input" placeholder="Tên bài hát / Video...">
+            <input type="text" id="newSongUrl" class="add-song-input" placeholder="Hoặc dán link (YouTube / MP3 / MP4)...">
+            
+            <label for="newSongFile" class="sub-upload-btn-music">📂 Hoặc chọn file MP3 / MP4 từ máy</label>
+            <input type="file" id="newSongFile" accept="audio/*,video/*" style="display: none;">
+            <div id="selectedFileName" style="font-size:0.75rem; color:#818cf8; margin-bottom:8px;"></div>
+
+            <div class="form-row">
+                <span>Chế độ:</span>
+                <select id="newSongVisibility">
+                    <option value="public">🌍 Công khai (Mọi người cùng thấy)</option>
+                    <option value="private">🔒 Riêng tư (Chỉ mình tôi thấy)</option>
+                </select>
+            </div>
+            <button class="add-btn" onclick="addNewSong()">Thêm vào danh sách</button>
         </div>
     </div>
 
@@ -303,12 +349,13 @@
             localStorage.setItem('myUniqueUserId', myUserId);
         }
 
-        // --- ĐIỀU KHIỂN MODAL CHUNG ---
+        // --- ĐIỀU KHIỂN MODAL ---
         function toggleModal(modalId) {
             closeAllModals();
             document.getElementById('modalOverlay').style.display = 'block';
             document.getElementById(modalId).style.display = 'block';
             if(modalId === 'settingsModal') renderBgThumbnails();
+            if(modalId === 'musicModal') loadPlaylistsFromFirebase();
         }
 
         function closeAllModals() {
@@ -317,54 +364,163 @@
             document.getElementById('musicModal').style.display = 'none';
         }
 
-        // --- TÍNH NĂNG NHẠC (YOUTUBE, SPOTIFY, APPLE MUSIC) ---
-        let currentPlatform = 'youtube';
+        // --- HỆ THỐNG PHÁT NHẠC & PLAYLIST ---
+        const defaultSongs = [
+            { id: '5qap5aO4i9A', title: '🎧 Lofi Hip Hop Radio', type: 'youtube', isPublic: true },
+            { id: 'jfKfPfyJRdk', title: '☕ Lofi Girl Chill Beats', type: 'youtube', isPublic: true },
+            { id: 'DWcJFNfaw9c', title: '💻 Coding Lofi Beats', type: 'youtube', isPublic: true },
+            { id: '7NOS8R0SBPI', title: '🎷 Coffee Jazz & Bossa Nova', type: 'youtube', isPublic: true }
+        ];
 
-        function switchMusicPlatform(platform) {
-            currentPlatform = platform;
-            const tabs = document.querySelectorAll('.music-tab');
-            tabs.forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+        let cloudPlaylists = [];
 
-            const input = document.getElementById('musicSearchInput');
-            if (platform === 'youtube') {
-                input.placeholder = "Dán link YouTube hoặc Video ID...";
-            } else if (platform === 'spotify') {
-                input.placeholder = "Dán link bài hát/playlist Spotify...";
-            } else if (platform === 'apple') {
-                input.placeholder = "Dán link bài hát Apple Music...";
+        function loadPlaylistsFromFirebase() {
+            db.collection('playlists').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                cloudPlaylists = [];
+                snapshot.forEach(doc => {
+                    cloudPlaylists.push({ id: doc.id, ...doc.data() });
+                });
+                renderPlaylist();
+            });
+        }
+
+        function renderPlaylist() {
+            const keyword = document.getElementById('musicSearchBox').value.toLowerCase();
+            const container = document.getElementById('playlistContainer');
+
+            // Kết hợp bài mặc định và bài từ Firestore (lọc theo quyền public hoặc uploaderId)
+            let allSongs = [...defaultSongs];
+            cloudPlaylists.forEach(song => {
+                if (song.isPublic || song.uploaderId === myUserId) {
+                    allSongs.push(song);
+                }
+            });
+
+            const filtered = allSongs.filter(s => s.title.toLowerCase().includes(keyword));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px; font-size:0.85rem;">Không tìm thấy bài hát phù hợp</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(song => {
+                let badge = song.isPublic ? '🌍' : '🔒';
+                let deleteBtn = (song.uploaderId === myUserId) ? `<span onclick="deleteSong(event, '${song.id}')" style="color:#e11d48; margin-left:8px;" title="Xóa">✕</span>` : '';
+                
+                container.innerHTML += `
+                    <div class="playlist-item" onclick='playMedia(${JSON.stringify(song)})'>
+                        <span>${badge} ${song.title}</span>
+                        <span style="font-size:0.75rem; color:#818cf8;">Phát ngay ${deleteBtn}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function playMedia(song) {
+            const container = document.getElementById('musicPlayerContainer');
+            if (song.type === 'youtube' || (!song.type && song.id)) {
+                let videoId = song.id;
+                if (videoId.includes('youtu.be/')) videoId = videoId.split('youtu.be/')[1].split('?')[0];
+                else if (videoId.includes('watch?v=')) videoId = videoId.split('watch?v=')[1].split('&')[0];
+                
+                container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else if (song.type === 'audio') {
+                container.innerHTML = `<audio controls autoplay src="${song.url}"></audio>`;
+            } else if (song.type === 'video') {
+                container.innerHTML = `<video controls autoplay src="${song.url}"></video>`;
+            } else {
+                // Link trực tiếp
+                if (song.url.includes('.mp4')) {
+                    container.innerHTML = `<video controls autoplay src="${song.url}"></video>`;
+                } else {
+                    container.innerHTML = `<audio controls autoplay src="${song.url}"></audio>`;
+                }
             }
         }
 
-        function loadMusicLink() {
-            const inputVal = document.getElementById('musicSearchInput').value.trim();
-            const container = document.getElementById('musicPlayerContainer');
-            if (!inputVal) return;
+        // Xử lý chọn file MP3/MP4 từ máy
+        let uploadedFileUrl = '';
+        let uploadedFileType = '';
+        const newSongFile = document.getElementById('newSongFile');
+        newSongFile.addEventListener('change', async function() {
+            const file = newSongFile.files[0];
+            if (!file) return;
 
-            if (currentPlatform === 'youtube') {
-                let videoId = inputVal;
-                if (inputVal.includes('youtu.be/')) {
-                    videoId = inputVal.split('youtu.be/')[1].split('?')[0];
-                } else if (inputVal.includes('watch?v=')) {
-                    videoId = inputVal.split('watch?v=')[1].split('&')[0];
-                }
-                container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            } 
-            else if (currentPlatform === 'spotify') {
-                // Chuyển link Spotify thông thường sang link embed widget
-                let embedUrl = inputVal;
-                if (inputVal.includes('spotify.com/')) {
-                    embedUrl = inputVal.replace('spotify.com/', 'spotify.com/embed/');
-                }
-                container.innerHTML = `<iframe src="${embedUrl}?utm_source=generator" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            document.getElementById('selectedFileName').textContent = `Đang tải lên: ${file.name}...`;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'idontknow');
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/egzgqmsa/auto/upload', {
+                    method: 'POST', body: formData
+                });
+                const data = await response.json();
+                uploadedFileUrl = data.secure_url;
+                uploadedFileType = file.type.includes('video') ? 'video' : 'audio';
+                document.getElementById('selectedFileName').textContent = `✅ Đã tải lên file thành công!`;
+            } catch (err) {
+                alert('Tải file thất bại!');
+                document.getElementById('selectedFileName').textContent = '';
             }
-            else if (currentPlatform === 'apple') {
-                // Chuyển link Apple Music sang embed widget
-                let embedUrl = inputVal;
-                if (inputVal.includes('music.apple.com')) {
-                    embedUrl = inputVal.replace('music.apple.com', 'embed.music.apple.com');
+        });
+
+        async function addNewSong() {
+            const title = document.getElementById('newSongTitle').value.trim();
+            const linkUrl = document.getElementById('newSongUrl').value.trim();
+            const isPublic = document.getElementById('newSongVisibility').value === 'public';
+
+            if (!title) {
+                alert('Vui lòng nhập tên bài hát!');
+                return;
+            }
+
+            let finalUrl = uploadedFileUrl || linkUrl;
+            let type = uploadedFileType;
+
+            if (!finalUrl) {
+                alert('Vui lòng chọn file MP3/MP4 hoặc dán link bài hát!');
+                return;
+            }
+
+            if (linkUrl && !uploadedFileUrl) {
+                if (linkUrl.includes('youtube.com') || linkUrl.includes('youtu.be')) {
+                    type = 'youtube';
+                    finalUrl = linkUrl;
+                } else if (linkUrl.endsWith('.mp4')) {
+                    type = 'video';
+                } else {
+                    type = 'audio';
                 }
-                container.innerHTML = `<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="150" style="width:100%;max-width:660px;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="${embedUrl}"></iframe>`;
+            }
+
+            try {
+                await db.collection('playlists').add({
+                    title: title,
+                    url: finalUrl,
+                    type: type,
+                    isPublic: isPublic,
+                    uploaderId: myUserId,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Đã thêm vào danh sách phát thành công!');
+                document.getElementById('newSongTitle').value = '';
+                document.getElementById('newSongUrl').value = '';
+                newSongFile.value = '';
+                uploadedFileUrl = '';
+                document.getElementById('selectedFileName').textContent = '';
+            } catch (err) {
+                alert('Lỗi khi thêm bài hát!');
+            }
+        }
+
+        async function deleteSong(event, docId) {
+            event.stopPropagation();
+            if (confirm('Bạn có chắc muốn xóa bài hát này khỏi danh sách?')) {
+                await db.collection('playlists').doc(docId).delete();
             }
         }
 
