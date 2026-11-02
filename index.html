@@ -137,9 +137,49 @@
         #fileInput { display: none; }
         .manage-btn { background: transparent; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }
 
-        .gallery-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; width: 90%; max-width: 900px; margin-top: 25px; margin-bottom: 40px;
+        /* Thanh điều khiển hiển thị (Mới nhất / Cũ nhất) */
+        .controls-container {
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
         }
+        .sort-select {
+            background: rgba(17, 24, 39, 0.85);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            outline: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Khu vực phân chia theo tháng */
+        .month-section {
+            width: 90%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+        .month-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .gallery-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; 
+            width: 100%;
+        }
+
         .memory-item {
             background: #1a1a1a; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 12px 12px 15px 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); text-align: center;
@@ -162,6 +202,8 @@
         body.light-mode .custom-modal { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: rgba(0,0,0,0.15); }
         body.light-mode .custom-modal h3, body.light-mode .settings-section h4 { color: #475569; }
         body.light-mode .settings-toggle-btn { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.15); color: #475569; }
+        body.light-mode .sort-select { background: rgba(255, 255, 255, 0.9); color: #0f172a; border-color: rgba(0, 0, 0, 0.15); }
+        body.light-mode .month-title { color: #475569; border-color: rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
@@ -210,12 +252,21 @@
         <button class="manage-btn" onclick="loadGallery(true)">Quản lý ảnh</button>
     </div>
 
-    <div id="galleryContainer" class="gallery-grid" style="display: none;"></div>
+    <!-- Thanh lựa chọn Mới nhất / Cũ nhất -->
+    <div class="controls-container">
+        <select id="sortSelect" class="sort-select" onchange="loadGallery(false)">
+            <option value="desc">Mới nhất</option>
+            <option value="asc">Cũ nhất</option>
+        </select>
+    </div>
+
+    <!-- Khung chứa gallery phân nhóm theo tháng -->
+    <div id="galleryContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
 
     <script>
-        // --- CẤU HÌNH FIREBASE CHO IDONTKNOW ---
+        // --- CẤU HÌNH FIREBASE RIÊNG CHO IDONTKNOW ---
         const firebaseConfig = {
-            apiKey: "AIzaSyBe82TCKrsTNrWyRopuHHgAEWDRmiWed5o", // Bạn thay thế bằng config của idontknow nếu dùng project riêng
+            apiKey: "AIzaSyBe82TCKrsTNrWyRopuHHgAEWDRmiWed5o",
             authDomain: "idontknow-b0342.firebaseapp.com",
             projectId: "idontknow-b0342",
             storageBucket: "idontknow-b0342.firebasestorage.app",
@@ -387,16 +438,16 @@
             loadGallery(true);
         }
 
-        // --- TẢI & HIỂN THỊ THƯ VIỆN ẢNH ---
+        // --- TẢI & PHÂN NHÓM HIỂN THỊ THEO THÁNG & SẮP XẾP ---
         function loadGallery(shouldScroll = false) {
             const gallery = document.getElementById('galleryContainer');
-            gallery.style.display = 'grid';
-            gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Đang đồng bộ kho lưu trữ...</p>';
+            const sortOrder = document.getElementById('sortSelect').value;
+            gallery.innerHTML = '<p style="text-align: center; color: #94a3b8; margin-top: 20px;">Đang đồng bộ kho lưu trữ...</p>';
 
             db.collection('memories').onSnapshot((snapshot) => {
                 gallery.innerHTML = '';
                 if (snapshot.empty) {
-                    gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Chưa có kỷ niệm nào...</p>';
+                    gallery.innerHTML = '<p style="text-align: center; color: #94a3b8; margin-top: 20px;">Chưa có kỷ niệm nào...</p>';
                     return;
                 }
 
@@ -405,33 +456,68 @@
                     items.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Sắp xếp ảnh mới nhất lên đầu
+                // Sắp xếp theo Mới nhất / Cũ nhất
                 items.sort((a, b) => {
                     let timeA = a.createdAt ? a.createdAt.toMillis() : 0;
                     let timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return timeB - timeA;
+                    return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
                 });
+
+                // Phân nhóm theo Tháng và Năm ("Tháng XX năm YYYY")
+                let grouped = {};
+                let groupKeys = [];
 
                 items.forEach((item) => {
-                    const docId = item.id;
-                    let deleteBtn = item.uploaderId === myUserId ? `<button class="delete-btn" onclick="deleteMemory('${docId}')">Xóa ảnh</button>` : '';
-
-                    gallery.innerHTML += `
-                        <div class="memory-item">
-                            <img src="${item.url}" alt="${item.name}">
-                            <p>${item.name}</p>
-                            <span>${item.date || ''}</span>
-                            <div class="action-btns">
-                                <a href="${item.url}" target="_blank" download class="download-btn">Tải về</a>
-                                ${deleteBtn}
-                            </div>
-                        </div>
-                    `;
+                    let dateObj = item.createdAt ? item.createdAt.toDate() : new Date();
+                    let month = dateObj.getMonth() + 1;
+                    let year = dateObj.getFullYear();
+                    let key = `Tháng ${month < 10 ? '0' + month : month} năm ${year}`;
+                    
+                    if (!grouped[key]) {
+                        grouped[key] = [];
+                        groupKeys.push(key);
+                    }
+                    grouped[key].push(item);
                 });
+
+                if (sortOrder === 'asc') {
+                    groupKeys.reverse();
+                }
+
+                // Render nhóm tháng ra màn hình
+                groupKeys.forEach((key) => {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'month-section';
+                    sectionDiv.innerHTML = `<div class="month-title">📅 ${key}</div>`;
+                    
+                    const gridDiv = document.createElement('div');
+                    gridDiv.className = 'gallery-grid';
+
+                    grouped[key].forEach((item) => {
+                        const docId = item.id;
+                        let deleteBtn = item.uploaderId === myUserId ? `<button class="delete-btn" onclick="deleteMemory('${docId}')">Xóa ảnh</button>` : '';
+
+                        gridDiv.innerHTML += `
+                            <div class="memory-item">
+                                <img src="${item.url}" alt="${item.name}">
+                                <p>${item.name}</p>
+                                <span>${item.date || ''}</span>
+                                <div class="action-btns">
+                                    <a href="${item.url}" target="_blank" download class="download-btn">Tải về</a>
+                                    ${deleteBtn}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    sectionDiv.appendChild(gridDiv);
+                    gallery.appendChild(sectionDiv);
+                });
+
                 if (shouldScroll) gallery.scrollIntoView({ behavior: 'smooth' });
             }, (error) => {
                 console.error("Lỗi Firestore:", error);
-                gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #e11d48;">Lỗi kết nối cơ sở dữ liệu! Hãy kiểm tra lại Firebase Firestore Rules.</p>';
+                gallery.innerHTML = '<p style="text-align: center; color: #e11d48; margin-top: 20px;">Lỗi kết nối cơ sở dữ liệu!</p>';
             });
         }
 
