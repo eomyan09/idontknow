@@ -17,8 +17,197 @@
             align-items: center;
             min-height: 100vh;
             padding-bottom: 50px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* Nút Cài đặt tròn góc trên bên phải (Đường kính ~1cm / 38px) */
+        .settings-toggle-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .settings-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        /* Overlay nền mờ khi mở menu cài đặt */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+        }
+
+        /* Khung Modal Cài đặt */
+        .settings-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 420px;
+            z-index: 1002;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            box-sizing: border-box;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .settings-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover {
+            color: #fff;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section h4 {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .sub-upload-btn {
+            display: block;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .sub-upload-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .bg-thumbnails-title {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .bg-thumbnails {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .bg-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .bg-thumb:hover {
+            transform: scale(1.05);
+        }
+
+        .bg-thumb.active {
+            border-color: #6366f1;
+        }
+
+        .reset-bg-btn {
+            background: transparent;
+            color: #e11d48;
+            border: 1px solid rgba(225, 29, 72, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .reset-bg-btn:hover {
+            background: rgba(225, 29, 72, 0.1);
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover, .theme-btn.active {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-color: transparent;
+        }
+
+        /* Giao diện chính */
         .header {
             text-align: center;
             margin-top: 40px;
@@ -120,7 +309,6 @@
             margin-bottom: 40px;
         }
 
-        /* Khung từng bức ảnh kỷ niệm */
         .memory-item {
             background: #1a1a1a;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -135,7 +323,6 @@
             transform: translateY(-5px);
         }
 
-        /* Ảnh bên trong khung */
         .memory-item img {
             width: 100%;
             height: 180px;
@@ -143,7 +330,6 @@
             border-radius: 4px;
         }
 
-        /* Tên kỷ niệm */
         .memory-item p {
             font-size: 0.95rem;
             font-weight: 600;
@@ -152,7 +338,6 @@
             margin-bottom: 4px;
         }
 
-        /* Ngày tháng năm */
         .memory-item span {
             font-size: 0.75rem;
             color: #94a3b8;
@@ -160,7 +345,6 @@
             margin-top: 4px;
         }
 
-        /* Nút "Ẩn ảnh khỏi website" màu đỏ phong cách */
         .delete-btn {
             background-color: #e11d48;
             color: white;
@@ -177,9 +361,119 @@
         .delete-btn:hover {
             background-color: #be123c;
         }
+
+        /* --- STYLING CHO CHẾ ĐỘ SÁNG (LIGHT MODE) --- */
+        body.light-mode {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        body.light-mode .card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        body.light-mode .card h2, body.light-mode .header h1 {
+            color: #0f172a;
+        }
+        body.light-mode .header p {
+            color: #475569;
+        }
+        body.light-mode .input-field {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            color: #0f172a;
+        }
+        body.light-mode .input-field::placeholder {
+            color: #94a3b8;
+        }
+        body.light-mode .manage-btn {
+            color: #475569;
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        body.light-mode .manage-btn:hover {
+            color: #0f172a;
+            border-color: rgba(0, 0, 0, 0.4);
+        }
+        body.light-mode .memory-item {
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        body.light-mode .memory-item p {
+            color: #0f172a;
+        }
+        body.light-mode .memory-item span {
+            color: #64748b;
+        }
+        body.light-mode .settings-modal {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: #0f172a;
+        }
+        body.light-mode .settings-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        body.light-mode .settings-section h4, body.light-mode .bg-thumbnails-title, body.light-mode .close-modal-btn {
+            color: #475569;
+        }
+        body.light-mode .sub-upload-btn {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px dashed rgba(0, 0, 0, 0.2);
+            color: #0f172a;
+        }
+        body.light-mode .sub-upload-btn:hover {
+            background: rgba(0, 0, 0, 0.06);
+        }
+        body.light-mode .settings-toggle-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: #475569;
+        }
+        body.light-mode .settings-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+        body.light-mode .theme-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Nút mở Cài đặt (Tròn 38px ở góc trên bên phải) -->
+    <button class="settings-toggle-btn" onclick="toggleSettingsMenu()">☰</button>
+
+    <!-- Modal Cài đặt -->
+    <div id="settingsOverlay" class="settings-overlay" style="display: none;" onclick="toggleSettingsMenu()"></div>
+    <div id="settingsModal" class="settings-modal" style="display: none;">
+        <div class="settings-header">
+            <h3>⚙️ Cài đặt cá nhân</h3>
+            <button class="close-modal-btn" onclick="toggleSettingsMenu()">✕</button>
+        </div>
+        
+        <!-- Mục 1: Nền -->
+        <div class="settings-section">
+            <h4>1. Đổi ảnh nền</h4>
+            <label for="bgFileInput" class="sub-upload-btn">+ Tải ảnh nền từ thư viện</label>
+            <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
+            
+            <div class="bg-thumbnails-title">Ảnh nền đã lưu trước đó:</div>
+            <div id="bgThumbnails" class="bg-thumbnails"></div>
+            <button class="reset-bg-btn" onclick="resetBackground()">Khôi phục nền mặc định</button>
+        </div>
+
+        <!-- Mục 2: Chế độ -->
+        <div class="settings-section">
+            <h4>2. Chế độ hiển thị</h4>
+            <div class="theme-options">
+                <button class="theme-btn" onclick="setTheme('light')">☀️ Sáng</button>
+                <button class="theme-btn" onclick="setTheme('dark')">🌙 Tối</button>
+                <button class="theme-btn" onclick="setTheme('system')">💻 Hệ thống</button>
+            </div>
+        </div>
+    </div>
 
     <div class="header">
         <h1>🌕 I DON'T KNOW 🌕</h1>
@@ -206,6 +500,107 @@
     <div id="galleryContainer" class="gallery-grid" style="display: none;"></div>
 
     <script>
+        // --- XỬ LÝ CÀI ĐẶT (MENU, NỀN, CHẾ ĐỘ) ---
+        function toggleSettingsMenu() {
+            const modal = document.getElementById('settingsModal');
+            const overlay = document.getElementById('settingsOverlay');
+            const isOpen = modal.style.display === 'block';
+            modal.style.display = isOpen ? 'none' : 'block';
+            overlay.style.display = isOpen ? 'none' : 'block';
+        }
+
+        // Tải ảnh nền từ máy
+        const bgFileInput = document.getElementById('bgFileInput');
+        bgFileInput.addEventListener('change', function() {
+            const file = bgFileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Url = e.target.result;
+                let bgList = JSON.parse(localStorage.getItem('myBackgrounds')) || [];
+                if (!bgList.includes(base64Url)) {
+                    bgList.unshift(base64Url);
+                    if (bgList.length > 10) bgList.pop(); // Giữ tối đa 10 ảnh nền gần nhất
+                    localStorage.setItem('myBackgrounds', JSON.stringify(bgList));
+                }
+                applyBackground(base64Url);
+                renderBgThumbnails();
+                bgFileInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function applyBackground(url) {
+            if (url) {
+                // Tạo lớp phủ mờ nhẹ trên ảnh nền để giữ chữ dễ nhìn
+                document.body.style.backgroundImage = `linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.75)), url('${url}')`;
+                localStorage.setItem('selectedBg', url);
+            } else {
+                document.body.style.backgroundImage = 'none';
+                localStorage.removeItem('selectedBg');
+            }
+            renderBgThumbnails();
+        }
+
+        function resetBackground() {
+            applyBackground(null);
+        }
+
+        function renderBgThumbnails() {
+            const container = document.getElementById('bgThumbnails');
+            if (!container) return;
+            let bgList = JSON.parse(localStorage.getItem('myBackgrounds')) || [];
+            let currentBg = localStorage.getItem('selectedBg');
+
+            if (bgList.length === 0) {
+                container.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">Chưa có ảnh nền nào được lưu</span>';
+                return;
+            }
+
+            container.innerHTML = '';
+            bgList.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'bg-thumb' + (url === currentBg ? ' active' : '');
+                img.onclick = () => applyBackground(url);
+                container.appendChild(img);
+            });
+        }
+
+        // Chế độ hiển thị (Sáng / Tối / Hệ thống)
+        function setTheme(mode) {
+            localStorage.setItem('themeSetting', mode);
+            applyTheme(mode);
+            updateThemeButtonsActiveState(mode);
+        }
+
+        function applyTheme(mode) {
+            const body = document.body;
+            if (mode === 'light') {
+                body.classList.add('light-mode');
+            } else if (mode === 'dark') {
+                body.classList.remove('light-mode');
+            } else if (mode === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    body.classList.remove('light-mode');
+                } else {
+                    body.classList.add('light-mode');
+                }
+            }
+        }
+
+        function updateThemeButtonsActiveState(mode) {
+            const buttons = document.querySelectorAll('.theme-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(mode === 'light' ? 'sáng' : mode === 'dark' ? 'tối' : 'hệ thống')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // --- XỬ LÝ UPLOAD KỶ NIỆM LÊN CLOUDINARY & LOCALSTORAGE ---
         const fileInput = document.getElementById('fileInput');
         const memoryName = document.getElementById('memoryName');
 
@@ -213,10 +608,8 @@
             const file = fileInput.files[0];
             if (!file) return;
 
-            // Lấy tên kỷ niệm người dùng nhập vào
             const name = memoryName.value.trim() || "Kỷ niệm không tên";
             
-            // Đóng gói file ảnh để chuẩn bị gửi đi
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', 'idontknow');
@@ -230,9 +623,8 @@
                 });
                 
                 const data = await response.json();
-                const imageUrl = data.secure_url; // Đường link bức ảnh sau khi lên mây
+                const imageUrl = data.secure_url;
 
-                // Lưu thông tin vào bộ nhớ trình duyệt (LocalStorage)
                 let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
                 memories.push({ 
                     name: name, 
@@ -243,11 +635,9 @@
 
                 alert('Đã lưu kỷ niệm thành công!');
                 
-                // Xóa nội dung ô nhập sau khi tải xong
                 memoryName.value = '';
                 fileInput.value = '';
 
-                // TỰ ĐỘNG GỌI HÀM MỞ VÀ TRƯỢT XUỐNG BỘ SƯU TẬP NGAY SAU KHI UPLOAD XONG
                 openGallery();
 
             } catch (error) {
@@ -257,19 +647,15 @@
         });
 
         function openGallery() {
-            // Hiển thị khung chứa lưới ảnh lên
             const gallery = document.getElementById('galleryContainer');
             gallery.style.display = 'grid';
-            gallery.innerHTML = ''; // Làm sạch trước khi load
+            gallery.innerHTML = '';
 
-            // Lấy danh sách kỷ niệm từ LocalStorage
             let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
 
-            // Nếu chưa có ảnh nào
             if (memories.length === 0) {
                 gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Chưa có kỷ niệm nào được lưu lại...</p>';
             } else {
-                // Đổ từng ảnh ra giao diện lưới
                 memories.forEach((item, index) => {
                     gallery.innerHTML += `
                         <div class="memory-item">
@@ -282,16 +668,27 @@
                 });
             }
 
-            // Tự động lướt mượt mà xuống vị trí của gallery
             gallery.scrollIntoView({ behavior: 'smooth' });
         }
 
         function deleteMemory(index) {
             let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
-            memories.splice(index, 1); // Xóa bức ảnh tại vị trí được bấm
+            memories.splice(index, 1);
             localStorage.setItem('myMemories', JSON.stringify(memories));
-            openGallery(); // Tải lại bộ sưu tập ngay lập tức
+            openGallery();
         }
+
+        // Khởi chạy khi tải trang
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBg = localStorage.getItem('selectedBg');
+            if (savedBg) {
+                applyBackground(savedBg);
+            }
+            renderBgThumbnails();
+
+            const savedTheme = localStorage.getItem('themeSetting') || 'dark';
+            setTheme(savedTheme);
+        });
     </script>
 </body>
 </html>
