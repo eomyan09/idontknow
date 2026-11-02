@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Don't Know - Memory Space</title>
+    <style>
+        /* CSS cơ bản và Glassmorphism */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0f19;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: #94a3b8;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn:hover {
+            opacity: 0.9;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .manage-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .manage-btn:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Giao diện lưới chứa các bức ảnh kiểu thẻ bài */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 900px;
+            margin-top: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Khung từng bức ảnh kỷ niệm */
+        .memory-item {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 12px 12px 15px 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .memory-item:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Ảnh bên trong khung */
+        .memory-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Tên kỷ niệm */
+        .memory-item p {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 10px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        /* Ngày tháng năm */
+        .memory-item span {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Nút "Ẩn ảnh khỏi website" màu đỏ phong cách */
+        .delete-btn {
+            background-color: #e11d48;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background-color: #be123c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🌕 I DON'T KNOW 🌕</h1>
+        <p>Thích lưu gì thì lưu :))</p>
+    </div>
+
+    <div class="card">
+        <h2>✨ Những kỷ niệm của chúng ta ✨</h2>
+        
+        <!-- Ô nhập tên kỷ niệm -->
+        <input type="text" class="input-field" id="memoryName" placeholder="Tên kỷ niệm...">
+
+        <!-- Nút chọn ảnh -->
+        <label for="fileInput" class="upload-btn">
+            + Chọn ảnh để tải lên
+        </label>
+        <input type="file" id="fileInput" accept="image/*">
+
+        <!-- Nút quản lý ảnh -->
+        <button class="manage-btn" onclick="openGallery()">Quản lý ảnh</button>
+    </div>
+
+    <!-- Khung lưới hiển thị danh sách ảnh (mặc định ẩn đi) -->
+    <div id="galleryContainer" class="gallery-grid" style="display: none;"></div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const memoryName = document.getElementById('memoryName');
+
+        fileInput.addEventListener('change', async function() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Lấy tên kỷ niệm người dùng nhập vào
+            const name = memoryName.value.trim() || "Kỷ niệm không tên";
+            
+            // Đóng gói file ảnh để chuẩn bị gửi đi
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'idontknow');
+
+            try {
+                alert('Đang tải ảnh lên không gian của bạn, vui lòng đợi :))');
+                
+                const response = await fetch('https://api.cloudinary.com/v1_1/egzgqmsa/image/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                const imageUrl = data.secure_url; // Đường link bức ảnh sau khi lên mây
+
+                // Lưu thông tin (Tên + Link ảnh + Ngày tháng) vào bộ nhớ trình duyệt (LocalStorage)
+                let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
+                memories.push({ 
+                    name: name, 
+                    url: imageUrl, 
+                    date: new Date().toLocaleDateString('vi-VN') 
+                });
+                localStorage.setItem('myMemories', JSON.stringify(memories));
+
+                alert('Đã lưu kỷ niệm thành công!');
+                
+                // Xóa nội dung ô nhập sau khi tải xong
+                memoryName.value = '';
+                fileInput.value = '';
+
+                // Nếu bộ sưu tập đang được mở, tự động cập nhật lại luôn
+                const gallery = document.getElementById('galleryContainer');
+                if (gallery.style.display === 'grid') {
+                    openGallery();
+                }
+
+            } catch (error) {
+                console.error('Lỗi khi tải ảnh:', error);
+                alert('Tải ảnh thất bại, vui lòng kiểm tra lại kết nối!');
+            }
+        });
+
+        function openGallery() {
+            // Hiển thị khung chứa lưới ảnh lên (giữ nguyên khung nhập liệu phía trên)
+            const gallery = document.getElementById('galleryContainer');
+            gallery.style.display = 'grid';
+            gallery.innerHTML = ''; // Làm sạch trước khi load
+
+            // Lấy danh sách kỷ niệm từ LocalStorage
+            let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
+
+            // Nếu chưa có ảnh nào
+            if (memories.length === 0) {
+                gallery.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8;">Chưa có kỷ niệm nào được lưu lại...</p>';
+            } else {
+                // Đổ từng ảnh ra giao diện lưới
+                memories.forEach((item, index) => {
+                    gallery.innerHTML += `
+                        <div class="memory-item">
+                            <img src="${item.url}" alt="${item.name}">
+                            <p>${item.name}</p>
+                            <span>${item.date || '02/11/2026'}</span>
+                            <button class="delete-btn" onclick="deleteMemory(${index})">Ẩn ảnh khỏi website</button>
+                        </div>
+                    `;
+                });
+            }
+
+            // Tự động lướt mượt mà xuống vị trí của gallery
+            gallery.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteMemory(index) {
+            let memories = JSON.parse(localStorage.getItem('myMemories')) || [];
+            memories.splice(index, 1); // Xóa bức ảnh tại vị trí được bấm
+            localStorage.setItem('myMemories', JSON.stringify(memories));
+            openGallery(); // Tải lại bộ sưu tập ngay lập tức
+        }
+    </script>
+</body>
+</html>
