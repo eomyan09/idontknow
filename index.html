@@ -133,16 +133,20 @@
         .header h1 { font-size: 2rem; margin-bottom: 5px; }
         .header p { color: #94a3b8; font-size: 0.95rem; }
 
+        /* Khung tải file rộng rãi và trong suốt */
         .card {
-            background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px); padding: 40px; border-radius: 20px; width: 90%; max-width: 550px;
-            text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); margin-bottom: 20px; box-sizing: border-box;
+            background: rgba(17, 24, 39, 0.15); 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px); 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 550px;
+            text-align: center; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
+            margin-bottom: 20px; 
+            box-sizing: border-box;
             transition: all 0.2s ease;
-        }
-        .card.transparent-frame {
-            background: rgba(17, 24, 39, 0.15) !important;
-            backdrop-filter: blur(5px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
         .card.dragover {
             border: 2px dashed #6366f1;
@@ -254,50 +258,67 @@
 
         .gallery-grid {
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 25px; 
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
+            gap: 16px; 
             width: 100%;
         }
 
         .memory-item {
-            background: #1a1a1a; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 12px 12px 15px 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); text-align: center; position: relative;
-            transition: background 0.3s, border 0.3s;
-        }
-        .memory-item.transparent-card {
-            background: rgba(26, 26, 26, 0.2) !important;
+            background: rgba(26, 26, 26, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            position: relative;
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .memory-item:hover {
+            transform: translateY(-2px);
         }
 
-        .media-container { position: relative; width: 100%; height: 180px; overflow: hidden; border-radius: 4px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); }
-        .memory-item img, .memory-item video { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+        .media-container { 
+            position: relative; 
+            width: 100%; 
+            height: 140px; 
+            overflow: hidden; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(0,0,0,0.3); 
+        }
+        .memory-item img, .memory-item video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 10px; 
+        }
         .memory-item audio { width: 90%; }
         
         .zoom-icon-btn {
-            position: absolute; top: 8px; right: 8px;
+            position: absolute; top: 6px; right: 6px;
             background: rgba(0, 0, 0, 0.6); color: #fff; border: none;
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
             backdrop-filter: blur(4px); transition: transform 0.2s; z-index: 10;
         }
         .zoom-icon-btn:hover { transform: scale(1.1); background: rgba(99, 102, 241, 0.8); }
 
-        .memory-item p { font-size: 0.95rem; font-weight: 600; margin-top: 10px; color: #ffffff; margin-bottom: 4px; }
-        .memory-item span { font-size: 0.75rem; color: #94a3b8; display: block; margin-top: 4px; }
-        .action-btns { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
-        .delete-btn { background-color: #e11d48; color: white; border: none; padding: 6px 12px; font-size: 0.75rem; border-radius: 20px; cursor: pointer; }
-        .download-btn { background-color: #0ea5e9; color: white; text-decoration: none; padding: 6px 12px; font-size: 0.75rem; border-radius: 20px; display: inline-block; }
+        .memory-item p { font-size: 0.85rem; font-weight: 600; margin-top: 8px; color: #ffffff; margin-bottom: 2px; }
+        .memory-item span { font-size: 0.7rem; color: #94a3b8; display: block; margin-top: 2px; }
+        .action-btns { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+        .delete-btn { background-color: #e11d48; color: white; border: none; padding: 5px 10px; font-size: 0.7rem; border-radius: 15px; cursor: pointer; }
+        .download-btn { background-color: #0ea5e9; color: white; text-decoration: none; padding: 5px 10px; font-size: 0.7rem; border-radius: 15px; display: inline-block; }
 
         /* Light Mode Styling */
         body.light-mode { background-color: #f8fafc; color: #0f172a; }
-        body.light-mode .card { background: rgba(255, 255, 255, 0.85); border-color: rgba(0, 0, 0, 0.1); }
-        body.light-mode .card.transparent-frame { background: rgba(255, 255, 255, 0.2) !important; border-color: rgba(0, 0, 0, 0.08) !important; }
+        body.light-mode .card { background: rgba(255, 255, 255, 0.2); border-color: rgba(0, 0, 0, 0.08); }
         body.light-mode .card h2, body.light-mode .header h1 { color: #0f172a; }
         body.light-mode .header p { color: #475569; }
         body.light-mode .input-field { background: rgba(0, 0, 0, 0.04); color: #0f172a; border-color: rgba(0, 0, 0, 0.12); }
-        body.light-mode .memory-item { background: #ffffff; border-color: rgba(0, 0, 0, 0.1); }
-        body.light-mode .memory-item.transparent-card { background: rgba(255, 255, 255, 0.3) !important; border-color: rgba(0,0,0,0.08) !important; }
+        body.light-mode .memory-item { background: rgba(255, 255, 255, 0.3); border-color: rgba(0,0,0,0.08); }
         body.light-mode .memory-item p { color: #0f172a; }
         body.light-mode .custom-modal { background: rgba(255, 255, 255, 0.95); color: #0f172a; border-color: rgba(0,0,0,0.15); }
         body.light-mode .custom-modal h3, body.light-mode .settings-section h4 { color: #475569; }
@@ -350,12 +371,6 @@
                 <div style="font-size:0.8rem; color:#94a3b8; margin-top:10px; margin-bottom:6px;">Ảnh nền bạn đã tải:</div>
                 <div id="bgThumbnails" class="bg-thumbnails"></div>
 
-                <!-- Tùy chọn khung trong suốt -->
-                <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
-                    <input type="checkbox" id="transparentFrameCheck" onchange="toggleTransparentFrame(this)">
-                    <label for="transparentFrameCheck">Hiển thị khung thẻ trong suốt</label>
-                </div>
-
                 <!-- Tùy chọn đồng bộ nền -->
                 <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
                     <input type="checkbox" id="syncBgCheck" onchange="toggleSyncBg(this)">
@@ -375,7 +390,7 @@
         </div>
 
         <div class="header">
-            <h1>I DON'T KNOW</h1>
+            <h1>🌕 I DON'T KNOW</h1>
             <p>Thích lưu gì thì lưu :))</p>
         </div>
 
@@ -407,7 +422,7 @@
     </div>
 
     <script>
-        // --- CẤU HÌNH FIREBASE CHO IDONTKNOW ---
+        // --- CẤU HÌNH FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBe82TCKrsTNrWyRopuHHgAEWDRmiWed5o",
             authDomain: "idontknow-b0342.firebaseapp.com",
@@ -453,37 +468,12 @@
                 renderBgThumbnails();
                 renderPresetThumbnails();
                 document.getElementById('syncBgCheck').checked = (localStorage.getItem('idontknow_SyncBg') === 'true');
-                document.getElementById('transparentFrameCheck').checked = (localStorage.getItem('idontknow_TransparentFrame') === 'true');
             }
         }
 
         function closeAllModals() {
             document.getElementById('modalOverlay').style.display = 'none';
             document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        // --- TÙY CHỌN KHUNG TRONG SUỐT ---
-        function toggleTransparentFrame(checkbox) {
-            if (checkbox.checked) {
-                localStorage.setItem('idontknow_TransparentFrame', 'true');
-            } else {
-                localStorage.setItem('idontknow_TransparentFrame', 'false');
-            }
-            applyTransparentFrameSetting();
-        }
-
-        function applyTransparentFrameSetting() {
-            const isTransparent = (localStorage.getItem('idontknow_TransparentFrame') === 'true');
-            const card = document.getElementById('dropZone');
-            if (isTransparent) {
-                card.classList.add('transparent-frame');
-            } else {
-                card.classList.remove('transparent-frame');
-            }
-            document.querySelectorAll('.memory-item').forEach(item => {
-                if (isTransparent) item.classList.add('transparent-card');
-                else item.classList.remove('transparent-card');
-            });
         }
 
         // --- QUẢN LÝ NỀN ĐỒNG BỘ QUA FIREBASE ---
@@ -867,8 +857,6 @@
 
                 if (sortOrder === 'asc') groupKeys.reverse();
 
-                let isTransparent = (localStorage.getItem('idontknow_TransparentFrame') === 'true');
-
                 groupKeys.forEach((key) => {
                     const sectionDiv = document.createElement('div');
                     sectionDiv.className = 'month-section';
@@ -894,10 +882,8 @@
                                 </div>`;
                         }
 
-                        let cardClass = 'memory-item' + (isTransparent ? ' transparent-card' : '');
-
                         gridDiv.innerHTML += `
-                            <div class="${cardClass}">
+                            <div class="memory-item">
                                 ${mediaHtml}
                                 <p>${item.name}</p>
                                 <span>${item.date || ''}</span>
@@ -945,7 +931,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             fetchAndApplyBackground();
-            applyTransparentFrameSetting();
             setTheme(localStorage.getItem('idontknow_Theme') || 'dark');
             loadGallery(false);
         });
