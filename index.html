@@ -28,6 +28,23 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* Hiệu ứng kéo thả toàn trang */
+        body.dragover-global::after {
+            content: "📥 Thả file vào đây để tải lên!";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(99, 102, 241, 0.85);
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+        }
+
         /* Đã ẩn màn hình khóa mật khẩu */
         #lockScreen {
             display: none !important;
@@ -157,10 +174,6 @@
             backdrop-filter: blur(5px) !important;
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
-        .card.dragover {
-            border: 2px dashed #6366f1;
-            background: rgba(99, 102, 241, 0.15);
-        }
 
         .input-field {
             width: 100%; padding: 12px 15px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05);
@@ -267,7 +280,7 @@
             box-shadow: 0 2px 8px rgba(2, 132, 199, 0.5);
         }
 
-        /* Lightbox Xem toàn màn hình (Video và Ảnh vừa vặn, không quá to/nhỏ) */
+        /* Lightbox */
         #lightboxModal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.92); z-index: 3000;
@@ -338,7 +351,6 @@
             position: relative;
         }
 
-        /* Khung nhập tay ngày tháng DD/MM/YYYY */
         .date-input-filter {
             background: rgba(17, 24, 39, 0.85);
             color: #ffffff;
@@ -383,7 +395,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* Modal Tệp Lặp */
         .duplicate-item-row {
             display: flex;
             align-items: center;
@@ -398,7 +409,6 @@
             width: 45px; height: 45px; object-fit: cover; border-radius: 4px;
         }
 
-        /* Khu vực phân chia theo tháng */
         .month-section {
             width: 90%;
             max-width: 900px;
@@ -472,10 +482,10 @@
 </head>
 <body>
 
-    <!-- MÀN HÌNH KHÓA MẬT KHẨU (Đã vô hiệu hóa) -->
+    <!-- MÀN HÌNH KHÓA MẬT KHẨU -->
     <div id="lockScreen"></div>
 
-    <!-- MODAL MỞ CAMERA (CHỤP ẢNH & QUAY VIDEO) -->
+    <!-- MODAL MỞ CAMERA -->
     <div id="cameraModal">
         <video id="cameraVideo" autoplay playsinline></video>
         <div class="cam-controls">
@@ -515,10 +525,8 @@
 
     <!-- NỘI DUNG CHÍNH CỦA TRANG WEB -->
     <div id="mainContent">
-        <!-- Nút Cài đặt tròn (Top: 15px) -->
         <button class="settings-toggle-btn" onclick="toggleModal('settingsModal')">☰</button>
 
-        <!-- Overlay chung -->
         <div id="modalOverlay" class="modal-overlay" onclick="closeAllModals()"></div>
 
         <!-- Modal Cài đặt -->
@@ -567,7 +575,7 @@
         </div>
 
         <!-- Khung thêm kỷ niệm -->
-        <div class="card" id="dropZone">
+        <div class="card" id="dropZoneCard">
             <h2>✨ Thêm kỷ niệm mới ✨</h2>
             <input type="text" class="input-field" id="memoryName" placeholder="Tên chung cho các file (tùy chọn)...">
             
@@ -577,8 +585,8 @@
                 <label for="fileInput" class="upload-btn">Chọn hoặc kéo thả</label>
             </div>
             
-            <!-- Hỗ trợ chọn nhiều file hoặc cả thư mục (webkitdirectory) -->
-            <input type="file" id="fileInput" accept="image/*,video/*,audio/*,.heic,.heif" multiple webkitdirectory directory>
+            <!-- Cho phép chọn nhiều file linh hoạt (bỏ webkitdirectory) -->
+            <input type="file" id="fileInput" accept="image/*,video/*,audio/*,.heic,.heif" multiple>
             
             <div class="manage-actions">
                 <button class="manage-btn" onclick="loadGallery(true)">Quản lý kho</button>
@@ -586,7 +594,7 @@
             </div>
         </div>
 
-        <!-- Thanh điều khiển: Thống kê, Nhập ngày DD/MM/YYYY, Lịch, Sắp xếp -->
+        <!-- Thanh điều khiển -->
         <div class="controls-container">
             <div class="stats-badge" id="statsBadge">
                 <span>🖼️ Ảnh: <strong id="imgCount">0</strong></span>
@@ -595,12 +603,10 @@
             </div>
 
             <div class="control-actions-right">
-                <!-- Khung nhập tay ngày tháng DD/MM/YYYY -->
                 <input type="text" id="dateInputFilter" class="date-input-filter" placeholder="DD/MM/YYYY" maxlength="10" oninput="handleManualDateInput(this)" title="Nhập ngày theo định dạng DD/MM/YYYY">
 
                 <div style="position: relative;">
                     <button class="calendar-toggle-btn" onclick="toggleCalendarDropdown()" title="Mở lịch chọn ngày">📅</button>
-                    <!-- Giao diện lịch chọn ngày -->
                     <div id="calendarDropdown" class="calendar-dropdown">
                         <div class="cal-header">
                             <button class="cal-btn" onclick="changeCalendarMonth(-1)">‹</button>
@@ -624,12 +630,11 @@
             </div>
         </div>
 
-        <!-- Khung chứa gallery phân nhóm theo tháng -->
+        <!-- Khung chứa gallery -->
         <div id="galleryContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
     </div>
 
     <script>
-        // Tự động khởi chạy giao diện chính ngay khi mở trang (bỏ qua bước nhập mật khẩu)
         window.addEventListener('DOMContentLoaded', () => {
             fetchAndApplyBackground();
             applyTransparentFrameSetting();
@@ -655,7 +660,6 @@
             localStorage.setItem('anhriengtu_UserId', myUserId);
         }
 
-        // --- 15 MẪU ẢNH NỀN CÓ SẴN ---
         const presetBackgrounds = [
             "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
@@ -674,7 +678,6 @@
             "https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?q=80&w=1000&auto=format&fit=crop"
         ];
 
-        // --- ĐIỀU KHIỂN MODAL ---
         function toggleModal(modalId) {
             closeAllModals();
             document.getElementById('modalOverlay').style.display = 'block';
@@ -694,7 +697,6 @@
             document.getElementById('calendarDropdown').style.display = 'none';
         }
 
-        // --- QUẢN LÝ NỀN ĐỒNG BỘ QUA FIREBASE ---
         async function applyBackground(url, isGlobal = false) {
             if (url) {
                 document.body.style.backgroundImage = `linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.75)), url('${url}')`;
@@ -834,7 +836,7 @@
 
         function applyTransparentFrameSetting() {
             const isTransparent = (localStorage.getItem('anhriengtu_TransparentFrame') === 'true');
-            const card = document.getElementById('dropZone');
+            const card = document.getElementById('dropZoneCard');
             if (isTransparent) card.classList.add('transparent-frame');
             else card.classList.remove('transparent-frame');
             document.querySelectorAll('.memory-item').forEach(item => {
@@ -1067,74 +1069,41 @@
             setTransform();
         });
 
-        // --- XỬ LÝ FILE & KÉO THẢ ---
+        // --- XỬ LÝ KÉO THẢ TOÀN TRANG & CHỌN NHIỀU FILE ---
         const fileInput = document.getElementById('fileInput');
-        const dropZone = document.getElementById('dropZone');
         const memoryName = document.getElementById('memoryName');
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.add('dragover');
-            }, false);
-        });
+        let dragCounter = 0;
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('dragover');
-            }, false);
-        });
-
-        dropZone.addEventListener('drop', async (e) => {
+        window.addEventListener('dragenter', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            dropZone.classList.remove('dragover');
+            dragCounter++;
+            document.body.classList.add('dragover-global');
+        });
 
-            const items = e.dataTransfer.items;
-            let filesToProcess = [];
-
-            if (items) {
-                for (let i = 0; i < items.length; i++) {
-                    const item = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
-                    if (item) {
-                        await traverseFileTree(item, filesToProcess);
-                    } else {
-                        const f = e.dataTransfer.files[i];
-                        if (f) filesToProcess.push(f);
-                    }
-                }
-            } else {
-                filesToProcess = Array.from(e.dataTransfer.files);
-            }
-
-            if (filesToProcess.length > 0) {
-                await handleFiles(filesToProcess);
+        window.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter <= 0) {
+                dragCounter = 0;
+                document.body.classList.remove('dragover-global');
             }
         });
 
-        async function traverseFileTree(item, fileList) {
-            if (item.isFile) {
-                await new Promise((resolve) => {
-                    item.file((file) => {
-                        fileList.push(file);
-                        resolve();
-                    });
-                });
-            } else if (item.isDirectory) {
-                const dirReader = item.createReader();
-                await new Promise((resolve) => {
-                    dirReader.readEntries(async (entries) => {
-                        for (let i = 0; i < entries.length; i++) {
-                            await traverseFileTree(entries[i], fileList);
-                        }
-                        resolve();
-                    });
-                });
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        window.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            document.body.classList.remove('dragover-global');
+
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                await handleFiles(Array.from(files));
             }
-        }
+        });
 
         fileInput.addEventListener('change', function() {
             if (fileInput.files.length > 0) {
@@ -1146,7 +1115,7 @@
             const baseName = memoryName.value.trim() || "Kỷ niệm";
             let successCount = 0;
 
-            alert(`Đang chuẩn bị tải lên ${files.length} file/thư mục...`);
+            alert(`Đang chuẩn bị tải lên ${files.length} file...`);
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
